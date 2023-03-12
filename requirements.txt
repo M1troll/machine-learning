@@ -1,0 +1,19 @@
+# Library for data analysis
+# http://pandas.pydata.org/pandas-docs/stable/
+pandas
+
+# Package for array computing in Python
+# https://numpy.org/doc/
+numpy
+
+# Library for machine learning in Python
+# https://scikit-learn.org/stable/
+scikit-learn
+
+# Library to sort Python imports
+# https://pycqa.github.io/isort/
+isort
+
+# IPython debugger
+# https://pypi.org/project/ipdb/
+ipdb

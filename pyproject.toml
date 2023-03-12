@@ -1,0 +1,5 @@
+[tool.isort]
+line_length=79
+multi_line_output=3
+skip='.venv, venv, .env, .gitignore'
+include_trailing_comma=true
