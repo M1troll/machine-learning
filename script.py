@@ -12,6 +12,7 @@ data, target = new_data.to_numpy(), np.array(data["cardio"])
 X_train, X_test, y_train, y_test = train_test_split(
     data, target, test_size=0.3, random_state=2023,
 )
+
 print(f"{X_train=}")
 print(f"{X_test=}")
 print(f"{y_train=}")
