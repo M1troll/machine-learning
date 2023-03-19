@@ -6,6 +6,10 @@ pandas
 # https://numpy.org/doc/
 numpy
 
+# Library for math data vizualization 
+# https://matplotlib.org/stable/tutorials/introductory/pyplot.html
+matplotlib
+
 # Library for machine learning in Python
 # https://scikit-learn.org/stable/
 scikit-learn
