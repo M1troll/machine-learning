@@ -1,8 +1,8 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 # Загрузка данных
-data = pd.read_csv("cardio_train.csv")
+data = pd.read_csv("data/cardio_train_small.csv", sep=";")
 
 # Определение целевой переменной
 target = "age"
@@ -10,6 +10,7 @@ target = "age"
 # Разбиение данных на обучающую и тестовую выборки
 train_data = data.sample(frac=0.8, random_state=42)
 test_data = data.drop(train_data.index)
+
 
 # Определение функции для разбиения данных
 def split_data(data, feature, value):
@@ -64,11 +65,17 @@ def predict(tree, observation):
     else:
         return predict(value[">= {}".format(value)], observation)
 
+
 # Обучение модели и оценка ее качества
 features = list(train_data.columns)
 print(features)
 features.remove(target)
 tree = create_tree(train_data, features, max_depth=3)
-predictions = [predict(tree, row) for _, row in test_data.iterrows()]
+
+predictions = []
+for index, row in test_data.iterrows():
+    predictions.append(predict(tree, row))
+    print(f"Row #{index}")
+
 accuracy = (predictions == test_data[target]).mean()
 print("Accuracy:", accuracy)

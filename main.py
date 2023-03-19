@@ -48,6 +48,7 @@ def make_predict(
 
 def main():
     """Performs passenger mortality prediction based on a training sample."""
+    import ipdb ; ipdb.set_trace()
     train_data = change_column_values(
         data = pd.read_csv(TRAIN_DATA_FILE),
         column_name="Sex",
