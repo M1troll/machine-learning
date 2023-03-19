@@ -72,7 +72,7 @@ class DecisionTree:
             most_common_Label = np.argmax(np.bincount(y))
             return Node(value=most_common_Label)
         
-         # get best split
+        # get best split
         rnd_feats = np.random.choice(self.n_features, self.n_features, replace=False)
         best_feat, best_thresh = self._best_split(X, y, rnd_feats)
     
