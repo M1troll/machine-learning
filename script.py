@@ -6,7 +6,10 @@ from tree import DecisionTree
 
 data = pd.read_csv("data/cardio_train_medium.csv", sep=";")
 
-new_data = data.drop(['id', 'cardio', 'age'], axis=1)
+data["age_years"] = np.floor(data["age"] / 365.25)
+new_data = pd.get_dummies(data, columns=['cholesterol', 'gluc'])
+
+new_data = new_data.drop(['id', 'cardio', 'age'], axis=1)
 data, target = new_data.to_numpy(), np.array(data["cardio"])
 
 X_train, X_test, y_train, y_test = train_test_split(
