@@ -1,0 +1,6 @@
+-r L1/requirements.in
+
+# Dev tools
+ipdb
+ipython
+isort

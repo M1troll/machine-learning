@@ -1,0 +1,7 @@
+# Framework for building ML & data science web apps
+# https://dash.plotly.com/layout
+dash
+
+# Python data analysis toolkit
+# https://pandas.pydata.org/docs/
+pandas
