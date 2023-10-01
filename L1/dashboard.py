@@ -1,10 +1,10 @@
 import dash
-from dash import html, dcc
-import requests
+import dash_bootstrap_components as dbc
 import pandas as pd
 import plotly.express as px
+import requests
+from dash import dcc, html
 from dash.dependencies import Input, Output
-
 
 API_TEMPLATE = "http://asterank.com/api/kepler?query={query}&limit={limit}"
 
@@ -14,24 +14,30 @@ NAMING_MAPPING = {
     "A" : "Semi-major axis (AU)",
 }
 
+STAR_SIZES = ["small", "similar", "bigger"]
+
+
 
 def get_data_from_api(query: dict = {}, limit: int = 2000) -> pd.DataFrame:
     """Send request to api and return data as `DataFrame`."""
     response = requests.get(API_TEMPLATE.format(query=query, limit=limit))
     response.raise_for_status()
-
     data = pd.json_normalize(response.json())
+
+    # Add star size categories to data
+    bins = [0, 1, 2, 20]
+    data["StarSize"] = pd.cut(data["RSTAR"], bins, labels=STAR_SIZES)
+
     return data
 
 
 def create_dasboard(data: pd.DataFrame) -> dash.Dash:
     """."""
-    # Add star size categories to data
-    bins = [0, 1, 2, 30]
-    star_size_names = ["small", "similar", "bigger"]
-    data["StarSize"] = pd.cut(data["RSTAR"], bins, labels=star_size_names)
-
-    app = dash.Dash(__name__)
+    app = dash.Dash(
+        __name__,
+        external_stylesheets=[dbc.themes.CYBORG],
+        title="Best Dashboard",
+    )
 
     min_range, max_range = min(data["RPLANET"]), max(data["RPLANET"])
     rplanet_selector = dcc.RangeSlider(
@@ -45,42 +51,66 @@ def create_dasboard(data: pd.DataFrame) -> dash.Dash:
 
     star_size_selector = dcc.Dropdown(
         id = "star_size_selector",
-        options=[{"label": name, "value": name} for name in star_size_names],
-        value=["similar"],
+        options=[{"label": name, "value": name} for name in STAR_SIZES],
+        value=STAR_SIZES,
         multi=True,
     )
 
-    app.layout = html.Div([
-        html.H1("Dashboard by Oboleninov Anton... Good luck..."),
-        # Selectors
-        html.Div([
-            html.Div([
-                html.H2("Planet range selector"),
-                html.Div(rplanet_selector, style={"width": "30%"}),
-            ]),
-            html.Div([
-                html.H2("Star size filter"),
-                html.Div(star_size_selector, style={"width": "30%"}),
-            ]),
-        ]),
-
-        html.Br(),
-
-        # Graphs
+    app.layout = html.Div(
         html.Div(
             [
-                html.Div(
-                    dcc.Graph(id="radius-temp-figure"),
-                    style={"float": "left", "width": "50%"},
+                # Header row
+                dbc.Row(
+                    html.H1("Dashboard by Oboleninov Anton... Good luck..."),
                 ),
-                html.Div(
-                    dcc.Graph(id="temp-a-figure"),
-                    style={"margin-left": "50%", "width": "50%"},
+                html.Br(),
+
+                # Selectors row
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            [
+                                html.H3("Planet range selector"),
+                                html.Div(rplanet_selector),
+                            ],
+                            width={"size": 4},
+                        ),
+                        dbc.Col(
+                            [
+                                html.H3("Star size filter"),
+                                html.Div(star_size_selector),
+                            ],
+                            width={"size": 4},
+                        ),
+                    ],
+                    style={"bottom-margin": "2%"},
+                ),
+
+                # Graphics row
+                dbc.Row(
+                    [
+                        dbc.Col(
+                            dcc.Graph(id="radius-temp-figure"),
+                            style={"margin": "2% 2% 2% 2%"},
+                        ),
+                        dbc.Col(
+                            dcc.Graph(id="temp-a-figure"),
+                            style={"margin": "2% 2% 2% 2%"},
+                        ),
+                    ],
+                    style={"bottom-margin": "2%"},
                 ),
             ],
-            style={"width": "100%"},
         ),
-    ])
+        style={
+            "background-image": "url('static/background-1.jpg')",
+            "background-repeat": "no-repeat",
+            "background-size": "100% auto",
+            "height": "100vh",
+            "width": "100vw",
+            "margin": "0",
+        },
+    )
 
     return app
 
@@ -90,12 +120,12 @@ def add_callbacks(app: dash.Dash, data: pd.DataFrame):
 
     @app.callback(
         [
-            Output(component_id="radius-temp-figure", component_property="figure"),
-            Output(component_id="temp-a-figure", component_property="figure"),
+            Output("radius-temp-figure", "figure"),
+            Output("temp-a-figure", "figure"),
         ],
         [
-            Input(component_id="range_slider", component_property="value"),
-            Input(component_id="star_size_selector", component_property="value"),
+            Input("range_slider", "value"),
+            Input("star_size_selector", "value"),
         ],
     )
     def update(rplanet, sizes):
@@ -103,8 +133,10 @@ def add_callbacks(app: dash.Dash, data: pd.DataFrame):
         new_data = data[
             (data["RPLANET"] >= rplanet[0])
             & (data["RPLANET"] <= rplanet[1])
-            & (data["StarSize"].isin(sizes))
         ]
+
+        if sizes:
+            new_data = new_data[(data["StarSize"].isin(sizes))]
 
         # Range & temperature
         radius_figure = px.scatter(
@@ -114,6 +146,7 @@ def add_callbacks(app: dash.Dash, data: pd.DataFrame):
             labels=NAMING_MAPPING,
             title="Planet range - planet temperature",
             color="StarSize",
+            template="plotly_dark",
         )
 
         # Temperature & distance to sun
@@ -124,6 +157,7 @@ def add_callbacks(app: dash.Dash, data: pd.DataFrame):
             labels=NAMING_MAPPING,
             title="Planet temperature - distance from the star",
             color="StarSize",
+            template="plotly_dark",
         )
 
         return radius_figure, temperature_figure
