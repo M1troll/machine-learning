@@ -7,5 +7,5 @@ dash
 pandas
 
 # Bootstrap for dash components
-dash-bootstrap-components
-dash-bootstrap-templates
+dash_bootstrap_components
+dash-bootstrap_templates

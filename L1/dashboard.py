@@ -56,12 +56,74 @@ def create_dasboard(data: pd.DataFrame) -> dash.Dash:
         multi=True,
     )
 
+    charts_tab = [
+        # Graphics row
+        dbc.Row(
+            [
+                dbc.Col(
+                    dcc.Graph(id="radius-temp-figure"),
+                    style={"margin": "2% 2% 2% 2%"},
+                ),
+                dbc.Col(
+                    dcc.Graph(id="temp-a-figure"),
+                    style={"margin": "2% 2% 2% 2%"},
+                ),
+            ],
+            style={"bottom-margin": "2%"},
+        ),
+    ]
+    dataset_tab = [dbc.Row(
+        html.Div(id="dataset-table")
+    )]
+
+    table_header = [
+        html.Thead(
+            html.Tr([
+                html.Th("Field Name"),
+                html.Th("Details"),
+            ]),
+        ),
+    ]
+    fields_description_mapping = {
+        "KOI": "Object of Interest number",
+        "A": "Semi-major axis (AU)",
+        "RPLANET": "Planetary radius (Earth radii)",
+        "RSTAR": "Stellar radius (Sol radii)",
+        "TSTAR": "Effective temperature of host star as reported in KIC (k)",
+        "KMAG": "Kepler magnitude (kmag)",
+        "TPLANET": "Equilibrium temperature of planet, per Borucki et al. (k)",
+        "T0": "Time of transit center (BJD-2454900)",
+        "UT0": "Uncertainty in time of transit center (+-jd)",
+        "PER": "Period (days)",
+        "UPER": "Uncertainty in period (+-days)",
+        "DEC": "Declination (@J200)",
+        "RA": "Right ascension (@J200)",
+        "MSTAR": "Derived stellar mass (msol)",
+    }
+    fields_rows = [
+        html.Tr([html.Th(field), html.Th(details)])
+        for field, details in fields_description_mapping.items()
+    ]
+    table_body = [html.Tbody(fields_rows)]
+    fields_table = dbc.Table(table_header + table_body, bordered=True)
+
+    about_tab = [
+        dbc.Row(
+            html.A(
+                "Data are sourced from Kepler API via asterank.com",
+                href="http://www.asterank.com/kepler",
+                style={"margin-top": "20px"},
+            ),
+        ),
+        dbc.Row(html.Div(fields_table, style={"margin-top": "20px"})),
+    ]
+
     app.layout = html.Div(
         html.Div(
             [
                 # Header row
                 dbc.Row(
-                    html.H1("Dashboard by Oboleninov Anton... Good luck..."),
+                    html.H2("Dashboard by Oboleninov Anton... Good luck..."),
                 ),
                 html.Br(),
 
@@ -85,21 +147,20 @@ def create_dasboard(data: pd.DataFrame) -> dash.Dash:
                     ],
                     style={"bottom-margin": "2%"},
                 ),
-
-                # Graphics row
-                dbc.Row(
-                    [
-                        dbc.Col(
-                            dcc.Graph(id="radius-temp-figure"),
-                            style={"margin": "2% 2% 2% 2%"},
-                        ),
-                        dbc.Col(
-                            dcc.Graph(id="temp-a-figure"),
-                            style={"margin": "2% 2% 2% 2%"},
-                        ),
-                    ],
-                    style={"bottom-margin": "2%"},
-                ),
+                dbc.Tabs([
+                    dbc.Tab(
+                        charts_tab,
+                        label="Charts",
+                    ),    
+                    dbc.Tab(
+                        dataset_tab,
+                        label="Dataset",
+                    ),    
+                    dbc.Tab(
+                        about_tab,
+                        label="About",
+                    ),    
+                ]),
             ],
         ),
         style={
@@ -122,6 +183,7 @@ def add_callbacks(app: dash.Dash, data: pd.DataFrame):
         [
             Output("radius-temp-figure", "figure"),
             Output("temp-a-figure", "figure"),
+            Output("dataset-table", "children"),
         ],
         [
             Input("range_slider", "value"),
@@ -160,7 +222,23 @@ def add_callbacks(app: dash.Dash, data: pd.DataFrame):
             template="plotly_dark",
         )
 
-        return radius_figure, temperature_figure
+        dataset_table = dash.dash_table.DataTable(
+            data=data.to_dict("records"),
+            columns=[{"name": name, "id": name} for name in data.columns],
+            style_data={
+                "width" : "100px",
+                "minWidth" : "100px",
+                "maxWidth" : "100px",
+            },
+            style_header={
+                "textAlign": "center",
+                "textColor": "black",
+                "fontWeight": "bold",
+            }
+        )
+        html_table = [html.P("Dataset table"), dataset_table]
+
+        return radius_figure, temperature_figure, html_table
 
 
 def main():
