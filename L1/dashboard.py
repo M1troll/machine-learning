@@ -26,8 +26,7 @@ def get_data_from_api(query: dict = {}, limit: int = 2000) -> pd.DataFrame:
 
     # Add star size categories to data
     bins = [0, 1, 2, 20]
-    data["StarSize"] = pd.cut(data["RSTAR"], bins, labels=STAR_SIZES)
-
+    data["StarSize"] = pd.cut(data["RSTAR"], bins, labels=STAR_SIZES).astype(str)
     return data
 
 
@@ -234,7 +233,7 @@ def add_callbacks(app: dash.Dash, data: pd.DataFrame):
                 "textAlign": "center",
                 "textColor": "black",
                 "fontWeight": "bold",
-            }
+            },
         )
         html_table = [html.P("Dataset table"), dataset_table]
 
