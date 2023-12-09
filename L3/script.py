@@ -11,7 +11,7 @@ from typing import Any
 
 seaborn.set()
 
-NEIGHBORS = 7
+NEIGHBORS = 6
 BLOCKS_COUNT = 5
 GRID_PARAMS = [
     {
@@ -47,7 +47,7 @@ def print_with_title(
     text_color: str = "white",
 ):
     """Make colored print."""
-    cprint(title, title_color, end="")
+    cprint(f"{title}: ", title_color, end="")
     cprint(str(text), text_color)
 
 
@@ -58,8 +58,8 @@ def main():
 
     n_train, _ = x_train.shape
     n_test, _ = x_test.shape
-    print_with_title("Train: ", n_train)
-    print_with_title("Test: ", n_test)
+    print_with_title("Train", n_train)
+    print_with_title("Test", n_test)
 
     knn = KNeighborsClassifier()
     grid = GridSearchCV(knn, GRID_PARAMS, cv=BLOCKS_COUNT)
@@ -69,9 +69,9 @@ def main():
     # Estimate
     grid.score(x_test, y_test.iloc[:,0])
     
-    print_with_title(f"Best params values: ", grid.best_params_)
-    print_with_title(f"Best cross-validation: ", grid.best_score_)
-    print_with_title(f"Best models: ", grid.best_estimator_)
+    print_with_title(f"Best params values", grid.best_params_)
+    print_with_title(f"Best cross-validation", grid.best_score_)
+    print_with_title(f"Best models", grid.best_estimator_)
 
     
     result =  pd.DataFrame()
@@ -114,7 +114,7 @@ def main():
 
     plt.ylabel("Mean value based on cross-validation results")
     plt.xlabel("n_neighbors")
-    plt.show()
+    # plt.show()
 
     best_ch = 0
     best_man = 0
@@ -122,12 +122,12 @@ def main():
     j=0
 
     # Add counter
+    # range for 'j' is taken from result metric row
 
     #j-номер строки
     for j in range(6):
 
         if result['mean_test_score'][j] > best_ch:
-            
             best_ch = result['mean_test_score'][j]
             k1=result['metric'][j]
             k2=result['n_neighbors'][j]
@@ -138,15 +138,15 @@ def main():
             k3=result['metric'][j]
             k4=result['n_neighbors'][j]
             
-    for j in range(12,18):
+    for j in range(12, 18):
         if result['mean_test_score'][j] > best_mink:
             best_mink = result['mean_test_score'][j]
             k5=result['metric'][j]
-            k6=result['n_neighbors'][j]    
+            k6=result['n_neighbors'][j]
 
-    print(best_ch)
-    print(best_man)
-    print(best_mink)
+    print_with_title(title="Best mean score of 'chebyshev'", text=best_ch)
+    print_with_title(title="Best mean score of 'manhattan'", text=best_man)
+    print_with_title(title="Best mean score of 'euclidean'", text=best_mink)
 
     knn1 = KNeighborsClassifier(metric=k1, n_neighbors=k2)    
     knn1.fit(x_train, y_train)
