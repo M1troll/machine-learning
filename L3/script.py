@@ -4,9 +4,11 @@ import mglearn
 import matplotlib.pyplot as plt
 import seaborn
 from termcolor import cprint
-from sklearn.neighbors import KNeighborsClassifier 
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LinearRegression 
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
+import statsmodels.api as sm
 from typing import Any
 
 seaborn.set()
@@ -52,9 +54,10 @@ def print_with_title(
 
 
 def main():
-    dataset = pd.read_csv("L3/iris.csv", sep=",")
-    x_class, y_class = np.hsplit(dataset, [4])
+    dataset = pd.read_csv("L3/wine.csv", sep=",")
+    x_class, y_class = np.hsplit(dataset, [13])
     x_train, x_test, y_train, y_test = my_train_test_split(x_class, y_class)   # type: ignore
+    y_train, y_test = y_train.astype(int), y_test.astype(int)
 
     n_train, _ = x_train.shape
     n_test, _ = x_test.shape
@@ -169,6 +172,32 @@ def main():
 
     plt.ylabel('Точность')
     plt.xlabel('n_neighbors')
+    # plt.show()
+
+
+    # Regression
+    import ipdb ; ipdb.set_trace()
+
+    x_train_array = np.array(x_train["Alcohol"]).reshape((-1, 1))
+    x_test_array = np.array(x_test["Alcohol"]).reshape((-1, 1))
+
+    regression_model = LinearRegression().fit(x_train_array, y_train)
+    import ipdb ; ipdb.set_trace()
+    k = regression_model.score(x_test_array, y_test)
+    print_with_title(title="Regression coefficient", text=k)
+
+    import ipdb ; ipdb.set_trace()
+
+    slope = regression_model.coef_
+    intercept = regression_model.intercept_
+
+    line = slope * x_train_array + intercept
+    plt.plot(x_train_array, line)
+    #end
+
+    plt.scatter(x,y, color="k", s=3.5)
+    plt.legend(fontsize=9)
+
     plt.show()
 
 
