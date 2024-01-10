@@ -51,14 +51,14 @@ plt.figure(figsize=(12, 5))
 
 # Predication
 plt.subplot(1, 2, 1)
-plt.scatter(X_test[:, 0], X_test[:, 1], c=y_pred, cmap='viridis', marker='o', s=50, edgecolors='k')
+plt.scatter(X_test[:, 0], X_test[:, 1], c=y_pred, marker='o', edgecolors='k')
 plt.xlabel('Feature 1')
 plt.ylabel('Feature 2')
 plt.title('Predicted Classes')
 
 # Real state
 plt.subplot(1, 2, 2)
-plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test, cmap='viridis', marker='o', s=50, edgecolors='k')
+plt.scatter(X_test[:, 0], X_test[:, 1], c=y_test, marker='o', edgecolors='k')
 plt.xlabel('Feature 1')
 plt.ylabel('Feature 2')
 plt.title('Actual Classes')
