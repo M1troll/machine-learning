@@ -60,7 +60,7 @@ plt.figure(figsize=(12, 5))
 
 # Prediction
 plt.scatter(y_test, y_pred, edgecolors=(0, 0, 0))
-plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
+plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2, color="red")
 plt.xlabel('Actual Values')
 plt.ylabel('Predicted Values')
 plt.title('Actual vs Predicted Values')
