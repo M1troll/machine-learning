@@ -9,6 +9,8 @@ import seaborn; seaborn.set()
 
 boston_housing = df = pd.read_csv('boston_housing.csv')
 X = np.array(boston_housing[boston_housing.columns[:-1]])
+
+# medv - median value of owner-occupied homes in $1000s.
 y = np.array(boston_housing[boston_housing.columns[-1]])
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
@@ -57,20 +59,11 @@ print()
 plt.figure(figsize=(12, 5))
 
 # Prediction
-plt.subplot(1, 2, 1)
 plt.scatter(y_test, y_pred, edgecolors=(0, 0, 0))
 plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
 plt.xlabel('Actual Values')
 plt.ylabel('Predicted Values')
 plt.title('Actual vs Predicted Values')
-
-# different between predication and real state
-plt.subplot(1, 2, 2)
-plt.scatter(y_test, y_test - y_pred, edgecolors=(0, 0, 0))
-plt.axhline(y=0, color='k', linestyle='--', linewidth=2)
-plt.xlabel('Actual Values')
-plt.ylabel('Residuals')
-plt.title('Residuals Plot')
 
 plt.tight_layout()
 plt.show()

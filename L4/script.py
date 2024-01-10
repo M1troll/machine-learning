@@ -11,6 +11,8 @@ from sklearn.model_selection import (
 
 boston_housing = pd.read_csv('boston_housing.csv')
 X = np.array(boston_housing[boston_housing.columns[:-1]])
+
+# medv - median value of owner-occupied homes in $1000s.
 y = np.array(boston_housing[boston_housing.columns[-1]])
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
