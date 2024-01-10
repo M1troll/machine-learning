@@ -15,7 +15,7 @@ knn = KNeighborsClassifier()
 
 n = 10
 param_grid = {'n_neighbors': np.arange(1, n+1), 'metric': ['chebyshev','manhattan','euclidean']}
-grid_search = GridSearchCV(knn, param_grid, cv=10)
+grid_search = GridSearchCV(knn, param_grid, cv=n)
 grid_search.fit(X_train, y_train)
 
 results = pd.DataFrame(grid_search.cv_results_)[['param_n_neighbors', 'param_metric', 'mean_test_score']]
