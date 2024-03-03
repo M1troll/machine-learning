@@ -45,6 +45,7 @@ accuracy = accuracy_score(y_test, logreg_predictions)
 print("Best Logistic Regression Model:", best_logreg_model)
 print("Accuracy on Test Data:", accuracy)
 print()
+import ipdb ; ipdb.set_trace()
 
 ####################################################################################################
 plt.figure(figsize=(12, 5))
@@ -124,6 +125,7 @@ plt.figure(figsize=(12, 5))
 
 plt.subplot(1, 2, 1)
 plt.scatter(X_test[:, 2], X_test[:, 5], c=svm_predictions, cmap='viridis', marker='o', s=50, edgecolors='k')
+
 plt.xlabel('Feature 1')
 plt.ylabel('Feature 2')
 plt.title('Predicted Classes')
