@@ -16,8 +16,11 @@ X = np.array(boston_housing[boston_housing.columns[:-1]])
 y = np.array(boston_housing[boston_housing.columns[-1]])
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
+# Кратко прочитай про разницу регрессий линейной, риджа и лассо 
 linear_reg = LinearRegression()
+# что такое CV и почему именно 5?
 cv_scores = cross_val_score(linear_reg, X_train, y_train, cv=5, scoring='neg_mean_squared_error')
+# почему берем отричательное значение (это как-то относится к приставке neg_ выше)
 cv_scores = -cv_scores
 
 print("Cross-Validation Scores:", cv_scores)

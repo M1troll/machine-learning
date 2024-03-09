@@ -14,6 +14,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_
 knn = KNeighborsClassifier()
 
 n = 10
+# почему мы используем именно эти три метрики?
 param_grid = {'n_neighbors': np.arange(1, n+1), 'metric': ['chebyshev','manhattan','euclidean']}
 grid_search = GridSearchCV(knn, param_grid, cv=n)
 grid_search.fit(X_train, y_train)

@@ -8,8 +8,6 @@ from sklearn.svm import SVC
 
 from sklearn.model_selection import (
     GridSearchCV,
-    cross_val_predict,
-    cross_val_score,
     train_test_split,
 )
 
@@ -30,6 +28,8 @@ y = np.array(titanik_df['Survived'])
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
 logreg = LogisticRegression()
+
+# прочитать что за коэффициент
 logreg_params = {'C': [0.1, 1, 10]}  # regularization parameter, inverse coeff
 logreg_grid = GridSearchCV(logreg, logreg_params, cv=5, scoring='accuracy')
 logreg_grid.fit(X_train, y_train)
@@ -44,13 +44,12 @@ logreg_predictions = best_logreg_model.predict(X_test)
 accuracy = accuracy_score(y_test, logreg_predictions)
 print("Best Logistic Regression Model:", best_logreg_model)
 print("Accuracy on Test Data:", accuracy)
-print()
-import ipdb ; ipdb.set_trace()
 
 ####################################################################################################
 plt.figure(figsize=(12, 5))
 
 plt.subplot(1, 2, 1)
+# что такое cmap
 plt.scatter(X_test[:, 2], X_test[:, 5], c=logreg_predictions, cmap='viridis', marker='o', s=50, edgecolors='k')
 plt.xlabel('Feature 1')
 plt.ylabel('Feature 2')

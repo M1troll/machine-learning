@@ -40,7 +40,6 @@ print()
 max_values = results_pivot.max(axis=0)
 n_neighbors = results_pivot.idxmax(axis=1)
 print(max_values)
-import ipdb ; ipdb.set_trace()
 result_max = pd.concat([max_values, n_neighbors], axis=1, keys=['0', '1'])
 result_max = result_max.reset_index()
 

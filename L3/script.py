@@ -176,17 +176,12 @@ def main():
 
 
     # Regression
-    import ipdb ; ipdb.set_trace()
-
     x_train_array = np.array(x_train["Alcohol"]).reshape((-1, 1))
     x_test_array = np.array(x_test["Alcohol"]).reshape((-1, 1))
 
     regression_model = LinearRegression().fit(x_train_array, y_train)
-    import ipdb ; ipdb.set_trace()
     k = regression_model.score(x_test_array, y_test)
     print_with_title(title="Regression coefficient", text=k)
-
-    import ipdb ; ipdb.set_trace()
 
     slope = regression_model.coef_
     intercept = regression_model.intercept_
